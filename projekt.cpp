@@ -1,6 +1,23 @@
 #include <windows.h> 
+#include <math.h> //cs i inne rzeczy do matmy swiatla
 
 #include "freeglut.h"
+
+
+const float Pi = 3.1415926535897932384626433832795;
+
+// ----------------------- swiatlo - najtrudniejsze
+
+
+//--------------Deklaracja i warto�ci inicjuj�ce dla �wiate� i materia�u ---------
+
+	//globalna energia ambient   
+GLfloat scene_ambient[] = { 1.0, 1.0, 1.0, 1.0 };
+
+//specyfikacja materia�u
+
+GLfloat mat_ambient[] = { 1.0, 1.0, 1.0, 1.0 };//reakcja na energi� ambient
+
 
 //wspolrzedne obserwatora
 
@@ -10,40 +27,39 @@ GLdouble eyez = 1.0;
 
 
 void walls() {
-	//Ściany 
-	//czerwona góra
-	glColor3f(1.0, 0.0, 0.0);
+	//Ściany - koloy komplementarne Monochromatic Color ladnie wspolgraja
+	//sufit  RGB 	najjasniejszy rgb(244,241,235)
+	glColor3f(0.95, 0.94, 0.92);
 	glVertex3f(-1.0, 1.0, 1.0); //przod lewo
 	glVertex3f(-1.0, 1.0, -1.0); //tyl lewp
 	glVertex3f(1.0, 1.0, -1.0); //tyl prawo
 	glVertex3f(1.0, 1.0, 1.0); //przod prawo
 
-	//dół zielony
-	//PODŁOGA
-	glColor3f(1.0, 1.0, 0.0); //kolor
+	//dół ciemny brąz 	181, 157, 121
+	//PODŁOGA 
+	glColor3f(0.70, 0.61, 0.4745); //kolor
 	glVertex3f(-1.0, 0.0, -1.0); //góra lewa
 	glVertex3f(1.0, 0.0, -1.0);  //góra prawo 
 	glVertex3f(1.0, 0.0, 1.0); //dol prawo
 	glVertex3f(-1.0, 0.0, 1.0); // dol lewo 
 
-	//Tylna środek
-	//żółta lewa środek
-	glColor3f(1.0, 1.0, 0.0);//kolor
+	// boczna srodek
+	glColor3f(0.92, 0.89, 0.85);
 	glVertex3f(-1.0, 0.0, 1.0); //lewa dół
 	glVertex3f(-1.0, 0.0, -1.0); //prawa doł
 	glVertex3f(-1.0, 1.0, -1.0); // gora prawa
 	glVertex3f(-1.0, 1.0, 1.0); // gora lewa
 
-	//rózowa TYŁ Środek
-	glColor3f(1.0, 0.0, 1.0);
+	//Tylna środek troszke ciemneijsza niz te boczne
+	glColor3f(0.89, 0.85, 0.78);
 	glVertex3f(1.0, 0, -1.0);//dol prawo
 	glVertex3f(1.0, 1.0, -1.0); //gora prawo
 	glVertex3f(-1.0, 1.0, -1.0);//gora lewo
 	glVertex3f(-1.0, 0, -1.0); //dol lewo
 
-	//morska
-	//PRAWA ŚICINA ŚRODEK
-	glColor3f(0.0, 1.0, 1.0);
+
+	//boczna srodeek
+	glColor3f(0.92, 0.89, 0.85);
 	glVertex3f(1.0, 1.0, -1.0); //gora lewa
 	glVertex3f(1.0, 1.0, 1.0); //gora prawo
 	glVertex3f(1.0, 0.0, 1.0); // dol prawo
@@ -51,12 +67,11 @@ void walls() {
 }
 
 
-void table_left_back_leg() {
+void table_left_back_leg(GLfloat baseForTable, GLfloat down) {
 	// ------------------------ lewa tylna noga ------------------------
 	//nogi są o podstawie kwadratu
 	//noga lewa tył
-	GLfloat base = 0.125; //grubośc nogi
-	GLfloat down = 0.001; //grubośc nogi
+	GLfloat base = baseForTable; //grubośc nogi
 	GLfloat y = 0.375; //wysokość nogi
 
 	//podstawa/doł nogi - KWADRAT
@@ -89,12 +104,11 @@ void table_left_back_leg() {
 }
 
 
-void table_right_back_leg() {
+void table_right_back_leg(GLfloat baseForTable, GLfloat down) {
 	// ------------------------ PRAWA TYLNA noga ------------------------
 	//nogi są o podstawie kwadratu
 	//noga lewa tył
-	GLfloat base = 0.125; //grubośc nogi
-	GLfloat down = 0.001; //grubośc nogi
+	GLfloat base = baseForTable; //grubośc nogi
 	GLfloat y = 0.375; //wysokość nogi
 
 	//podstawa/doł nogi - KWADRAT
@@ -137,12 +151,11 @@ void table_right_back_leg() {
 }
 
 
-void table_left_front_leg() {
+void table_left_front_leg(GLfloat baseForTable, GLfloat down) {
 	//LEWA PRZEDNIA noga
 
 	//podstawa - kwadrat
-	GLfloat base = 0.125; //grubośc nogi
-	GLfloat down = 0.001; //grubośc nogi
+	GLfloat base = baseForTable; //grubośc nogi
 	GLfloat y = 0.375; //wysokość nogi
 
 	// ------------------------ LEWA PRZEDNIA noga
@@ -187,12 +200,11 @@ void table_left_front_leg() {
 }
 
 
-void table_right_front_leg() {
+void table_right_front_leg(GLfloat baseForTable, GLfloat down) {
 	// ------------------------ PRAWA PRZEDNIA noga
 
 	//podstawa - kwadrat
-	GLfloat base = 0.125; //grubośc nogi
-	GLfloat down = 0.001; //grubośc nogi
+	GLfloat base = baseForTable; //grubośc nogi
 	GLfloat y = 0.375; //wysokość nogi
 
 	//podstawa/doł nogi - kwadrat
@@ -235,13 +247,14 @@ void table_right_front_leg() {
 	glVertex3f(0.5, y, 0.25); //góra przod - punt stołu
 }
 
-void table_top() {
+void table_top(GLfloat thicknessForTable, GLfloat down) {
 	//blat stołu
 	//dół blatu
 	//blat - taka ława do kafki
 
 	GLfloat y = 0.375; //wysokość nogi
-	GLfloat thickness = 0.1; // grubosc  blatu
+	GLfloat thickness = thicknessForTable; //grubośc blatu
+
 
 	//doł blatu
 	glColor3f(1.0, 0.0, 0.0);
@@ -285,9 +298,8 @@ void table_top() {
 
 
 // ------------------------------------- KRZESŁA -------------------------------------
-void chair_left_back_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness) {
+void chair_left_back_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness, GLfloat down) {
 	GLfloat base_leg = thickness / 4; //noga ma grubośc dwóch desek
-	GLfloat down = 0.001; //grubośc nogi
 
 	//tylna ściana lewej nogi
 	// jest stałe z tyłu (-1)*base_chair
@@ -323,11 +335,10 @@ void chair_left_back_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height
 }
 
 
-void chair_right_back_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness) {
+void chair_right_back_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness, GLfloat down) {
 
 	// ----------PRAWA NOGA
 	GLfloat base_leg = thickness / 4; //noga ma grubośc dwóch desek
-	GLfloat down = 0.001; //grubośc nogi
 
 	//tylna ściana PRAWEJ nogi
 	// jest stałe z tyłu (-1)*base_chair
@@ -367,10 +378,9 @@ void chair_right_back_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_heigh
 }
 
 
-void chair_left_front_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness) {
+void chair_left_front_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness, GLfloat down) {
 	// ----------- LEWA PRZEDNIA NOGA - z do mnie dodatnie
 	GLfloat base_leg = thickness / 4; //noga ma grubośc dwóch desek
-	GLfloat down = 0.001; //grubośc nogi
 
 	//tylna ściana lewej nogi - ta na równi z krzesłem
 	// jest stałe z przdou base_chair
@@ -408,10 +418,9 @@ void chair_left_front_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_heigh
 	glVertex3f((-1) * base_chair + base_leg, leg_height, base_chair - base_leg + shift_z); //przód góra z do mnie
 }
 
-void chair_right_front_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness) {
+void chair_right_front_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness, GLfloat down) {
 	// ----------PRAWA NOGA PRZÓD
 	GLfloat base_leg = thickness / 4; //noga ma grubośc dwóch desek
-	GLfloat down = 0.001; //grubośc nogi
 
 	// Z z przodu
 
@@ -448,9 +457,9 @@ void chair_right_front_leg(GLfloat shift_z, GLfloat base_chair, GLfloat leg_heig
 	glVertex3f(base_chair, leg_height, base_chair - base_leg + shift_z); //przód góra
 }
 
-void chair_back(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat thickness) {
+void chair_back(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat chairThickness, GLfloat down) {
 	GLfloat chair_back_height = 0.75 * leg_height; //oparcie na 3/4 wysokości nóg
-
+	GLfloat thickness = chairThickness / 4;
 	//podstawa oparcia prostokąt
 	//oparcia grubosci deski jak siedzisko
 	//z do mnie do przodu
@@ -503,7 +512,7 @@ void chair_back(GLfloat shift_z, GLfloat base_chair, GLfloat leg_height, GLfloat
 	glVertex3f(base_chair, leg_height + thickness + chair_back_height, base_chair + shift_z); //przód góra
 }
 
-void chair_front_top(GLfloat base_chair, GLfloat thickness, GLfloat leg_height, GLfloat shift_z) {
+void chair_front_top(GLfloat base_chair, GLfloat thickness, GLfloat leg_height, GLfloat shift_z, GLfloat down) {
 	// FrONTOWE KRZESŁO SIEDZISKO BLAT
 
 	//rysuję jakby miał byc na srodku
@@ -555,9 +564,10 @@ void chair_front_top(GLfloat base_chair, GLfloat thickness, GLfloat leg_height, 
 }
 
 
-void chair_front() {
+void chair_front(GLfloat down) {
 	GLfloat base_chair = 0.0625; //baza dla krzesła - połowa bazy długości siedziska
 	GLfloat base_chair_2 = 2 * base_chair; //baza dla krzesła - połowa bazy długości siedziska
+
 
 	GLfloat thickness = 0.1; // grubosc deski krzesła
 	GLfloat leg_height = 0.2625; //wysokość nogi krzesła - 0.7 razy wysokosc stołu
@@ -569,18 +579,18 @@ void chair_front() {
 	GLfloat shift_z = 0.5 + base_chair;
 
 	//siedziko
-	chair_front_top(base_chair, thickness, leg_height, shift_z);
+	chair_front_top(base_chair, thickness, leg_height, shift_z, down);
 
 	//chair_front_top(base_chair, thickness, leg_height, shift_z);
 	// ------------- nogi
-	chair_left_back_leg(shift_z, base_chair, leg_height, thickness);
-	chair_right_back_leg(shift_z, base_chair, leg_height, thickness);
-	chair_left_front_leg(shift_z, base_chair, leg_height, thickness);
-	chair_right_front_leg(shift_z, base_chair, leg_height, thickness);
-	chair_back(shift_z, base_chair, leg_height, thickness);
+	chair_left_back_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_right_back_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_left_front_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_right_front_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_back(shift_z, base_chair, leg_height, thickness, down);
 }
 
-void chair_back() {
+void chair_back(GLfloat down) {
 	GLfloat base_chair = 0.0625; //baza dla krzesła - połowa bazy długości siedziska
 	GLfloat base_chair_2 = 2 * base_chair; //baza dla krzesła - połowa bazy długości siedziska
 
@@ -594,38 +604,158 @@ void chair_back() {
 	GLfloat shift_z = (-1) * (0.5 + base_chair); // 0.5 + base_chair;
 
 	//siedziko
-	chair_front_top(base_chair, thickness, leg_height, shift_z);
+	chair_front_top(base_chair, thickness, leg_height, shift_z, down);
 
 	//chair_front_top(base_chair, thickness, leg_height, shift_z);
 	// ------------- nogi
-	chair_left_back_leg(shift_z, base_chair, leg_height, thickness);
-	chair_right_back_leg(shift_z, base_chair, leg_height, thickness);
-	chair_left_front_leg(shift_z, base_chair, leg_height, thickness);
-	chair_right_front_leg(shift_z, base_chair, leg_height, thickness);
+	chair_left_back_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_right_back_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_left_front_leg(shift_z, base_chair, leg_height, thickness, down);
+	chair_right_front_leg(shift_z, base_chair, leg_height, thickness, down);
 
-	//przesuniecie wektora z dla oparcia
-	GLfloat chair_back_z = shift_z - (base_chair * 2) + thickness;
-	chair_back(chair_back_z, base_chair, leg_height, thickness);
+	//przesuniecie wektora z dla oparcia krzesła kóte jest w głębi
+	GLfloat chair_back_z = shift_z - (base_chair * 2) + (thickness/4);
+	chair_back(chair_back_z, base_chair, leg_height, thickness, down);
 }
 
-void table() {
-	table_top();
-	table_left_back_leg();
-	table_right_back_leg();
-	table_left_front_leg();
-	table_right_front_leg();
+void table(GLfloat down) {
+	GLfloat baseForTable = 0.05;
+	table_top(baseForTable, down);
+	table_left_back_leg(baseForTable, down);
+	table_right_back_leg(baseForTable, down);
+	table_left_front_leg(baseForTable, down);
+	table_right_front_leg(baseForTable, down);
 }
 
+//funkcja pomocnicza rysuj�ca przybli�enie wielok�towe powierzchni kuli
+
+void kula(int m, int n, GLfloat r, GLfloat tx, GLfloat ty, GLfloat tz, GLfloat sx, GLfloat sy, GLfloat sz)
+//m (n) jest ilosci� segment�w na r�wnole�niku (po�owie po�udnika), r promieniem kuli 
+{
+
+	int i, j;
+	GLdouble alpha, beta, r0, r1, z0, z1, x00, x01, x10, x11, y00, y01, y10, y11;
+
+	alpha = 0.5 * Pi / float(n);
+	beta = 2 * Pi / float(m);
+	r0 = r;
+	z0 = 0;
+
+	glPushMatrix();
+	glTranslated(tx, ty, tz);
+	glScaled(sx, sy, sz);
+
+	for (j = 0; j < n - 1; j++)
+	{
+		r1 = r * cos(float((j + 1)) * alpha);
+		z1 = r * sin(float((j + 1)) * alpha);
+		x01 = r1; y01 = 0;
+		x00 = r0; y00 = 0;
+		for (i = 1; i <= m; i++)
+		{
+			x11 = r1 * cos(float(i) * beta); y11 = r1 * sin(float(i) * beta);
+			x10 = r0 * cos(float(i) * beta); y10 = r0 * sin(float(i) * beta);
+			glBegin(GL_POLYGON);
+			//	glColor3f(1,0,0);
+			glNormal3f(x00, y00, z0);
+			glVertex3d(x00, y00, z0);
+			glNormal3f(x10, y10, z0);
+			glVertex3d(x10, y10, z0);
+			glNormal3f(x11, y11, z1);
+			glVertex3d(x11, y11, z1);
+			glNormal3f(x01, y01, z1);
+			glVertex3d(x01, y01, z1);
+			glEnd();
+			glBegin(GL_POLYGON);
+			//	glColor3f(0,0,1);
+			glNormal3f(x00, y00, -z0);
+			glVertex3d(x00, y00, -z0);
+			glNormal3f(x01, y01, -z1);
+			glVertex3d(x01, y01, -z1);
+			glNormal3f(x11, y11, -z1);
+			glVertex3d(x11, y11, -z1);
+			glNormal3f(x10, y10, -z0);
+			glVertex3d(x10, y10, -z0);
+			glEnd();
+			x01 = x11; y01 = y11;
+			x00 = x10; y00 = y10;
+		}// end for i
+		r0 = r1;
+		z0 = z1;
+
+	}//end for j
+
+	glBegin(GL_TRIANGLE_FAN);
+	glNormal3f(0, 0, r);
+	glVertex3f(0, 0, r);
+	for (i = 0; i <= m; i++)
+	{
+		x10 = r1 * cos(float(i) * beta); y10 = r1 * sin(float(i) * beta);
+		glNormal3f(x10, y10, z1);
+		glVertex3f(x10, y10, z1);
+	}
+	glEnd();
+
+	glBegin(GL_TRIANGLE_FAN);
+	glNormal3f(0, 0, -r);
+	glVertex3f(0, 0, -r);
+	for (i = m; i >= 0; i--)
+	{
+		x10 = r1 * cos(float(i) * beta); y10 = r1 * sin(float(i) * beta);
+		glNormal3f(x10, y10, -z1);
+		glVertex3f(x10, y10, -z1);
+	}
+	glEnd();
+
+	glPopMatrix();
+
+}//end kula()
 
 
+void swiatelko(void)//globalne �wiat�o ambient
+{
+	scene_ambient[0] = 1.0;
+	scene_ambient[1] = 1.0;
+	scene_ambient[2] = 1.0;
+
+	mat_ambient[0] = 0.5;
+	mat_ambient[1] = 0.5;
+	mat_ambient[2] = 0.5;
+
+	glEnable(GL_LIGHTING);//w��czenie mechanizmu o�wietlenia
+
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, scene_ambient);
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
+	glLoadIdentity();
+
+	gluLookAt(190.0, 200.0, 130.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	kula(200, 200, 70, 0, 0, 0, 1, 1, 1);
+
+	mat_ambient[1] = 0.0; //wcze�niejsza warto�c =1.0
+	glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+
+	kula(100, 100, 70, 150, 0, 0, 1, 1, 1);
+
+	glFlush();
+	glutSwapBuffers();
+}
+
+//-----------glowna funkcja 
 void display()
 {
+	GLfloat down = 0.0000000000000000000000000000000000000000000014;
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//"czyszczenie" t�a okan i bufora g��bokosci
 	glEnable(GL_DEPTH_TEST);//w��cznie algorytmu zas�aniania
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(90.0, 1.0, 0.1, 10.0); //bry�a widzenia perspektywicznego
+
 
 	gluLookAt(eyex, eyey, eyez, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);//obserwator 
 	glMatrixMode(GL_MODELVIEW);
@@ -634,16 +764,19 @@ void display()
 
 	walls();
 	// ---stoł
-	table();
-	//--------------- krzesła
-	chair_front();
-	chair_back();
+	table(down);
+	//--------------- krzesła masywne mega wygodne jak w pracy w kuchni
+	
+	chair_front(down);
+	chair_back(down);
 
+	swiatelko();
 
 	glEnd();
 
 	glFlush();
 }
+
 
 //odrysowywanie okna renderingu
 
@@ -698,13 +831,23 @@ void Strzalki(int key, int x, int y)
 	Redisplay(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 }
 
+
+void init(void)
+{
+	glClearColor(0.1, 0.1, 0.1, 1.0);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+}
+
 void main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE | GLUT_DEPTH);
 	glutInitWindowSize(400, 300);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Scena testowa");
+	glutCreateWindow("projekt poprawione proporcje swiatlo jest ble");
 	glutDisplayFunc(display);
 
 	// obsluga klawiatury
@@ -712,6 +855,6 @@ void main(int argc, char** argv)
 
 	// obsluga strzalek
 	glutSpecialFunc(Strzalki);
-
+	///init();
 	glutMainLoop();
 }
